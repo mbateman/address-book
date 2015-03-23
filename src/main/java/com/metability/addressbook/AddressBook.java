@@ -78,5 +78,15 @@ public class AddressBook {
 	    return Math.abs(TimeUnit.DAYS.convert(dob1.getTime() - dob2.getTime(), TimeUnit.MILLISECONDS));
 	}
 	
+	public Map<Integer, Map<String,String>> findEntriesByGender(String gender) {
+		Map<Integer, Map<String,String>> details = new HashMap<>();
+		for (Integer id: entries().keySet()) {
+			Map<String, String> entry = entries().get(id);
+			if(entry.get("gender").equals(gender)) {
+				details.put(id, entry);
+			}
+		}		
+		return details;
+	} 
 	
 }
