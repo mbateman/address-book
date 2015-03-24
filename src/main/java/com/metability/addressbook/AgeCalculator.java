@@ -5,8 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -20,23 +20,18 @@ public class AgeCalculator {
 	}
 	
 	public Map<String,String> findOldest() throws ParseException {
-		List<Date> dates = new ArrayList<>();
-		for (Integer id : addressBook.entries().keySet()) {
-			Map<String, String> entry = addressBook.entries().get(id);
-			dates.add(new SimpleDateFormat("dd/MM/yy").parse(entry.get("dob")));			
-		}
-		Collections.sort(dates);
-		Map<String, String> details = new HashMap<>();
-		for (Integer id : addressBook.entries().keySet()) {
-			Map<String, String> entry = addressBook.entries().get(id);
-			if (new SimpleDateFormat("dd/MM/yy").parse(entry.get("dob")).equals(dates.get(0))) {
-				details = entry;
-				break;
-			}
-		}
-		return details;
+	    Comparator<Map.Entry<Integer, Map<String,String>>> byMapValues = new Comparator<Map.Entry<Integer, Map<String,String>>>() {
+	        @Override
+	        public int compare(Map.Entry<Integer, Map<String,String>> left, Map.Entry<Integer, Map<String,String>> right) {
+	            return left.getValue().get("dob").compareTo(right.getValue().get("dob"));
+	        }
+	    };
+	    List<Map.Entry<Integer, Map<String,String>>> addresses = new ArrayList<Map.Entry<Integer, Map<String,String>>>();
+	    addresses.addAll(addressBook.entries().entrySet());
+	    Collections.sort(addresses, byMapValues);
+	    return addresses.get(0).getValue();
 	}
-	
+    
 	public Integer differenceInAgesInDays(String firstName1, String firstName2) throws ParseException {
 		Map<String, String> entry1 = addressBook.findByFirstName(firstName1);
 		Map<String, String> entry2 = addressBook.findByFirstName(firstName2);
