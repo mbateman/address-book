@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,18 +20,12 @@ public class AddressBookTest {
 	
 	@Test
 	public void countMalesInAddressBook() throws IOException {
-		assertEquals(3, addressBook.findEntriesByGender("Male").size());
+		assertEquals(3, addressBook.findByGender("Male").size());
 	}
 
 	@Test
-	public void oldestPersonInAddressBook() throws IOException, ParseException {
-		assertEquals("Wes Jackson", addressBook.oldest().get("name"));
+	public void findByFirstName() throws IOException, ParseException {
+		Map<String, String> entry = addressBook.findByFirstName("Bill");
+		assertEquals("Bill McKnight", entry.get("name"));
 	}
-
-	@Test
-	public void howManyDaysOlderIsBillThanPaul() throws IOException, ParseException {
-		Long daysOlder = addressBook.daysOlder("Bill", "Paul");
-		assertEquals(2862, daysOlder.intValue());
-	}
-
 }
