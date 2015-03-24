@@ -3,12 +3,10 @@ package com.metability.addressbook;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class AgeCalculator {
@@ -20,16 +18,15 @@ public class AgeCalculator {
 	}
 	
 	public Map<String,String> findOldest() throws ParseException {
-	    Comparator<Map.Entry<Integer, Map<String,String>>> byMapValues = new Comparator<Map.Entry<Integer, Map<String,String>>>() {
-	        @Override
-	        public int compare(Map.Entry<Integer, Map<String,String>> left, Map.Entry<Integer, Map<String,String>> right) {
-	            return left.getValue().get("dob").compareTo(right.getValue().get("dob"));
-	        }
-	    };
-	    List<Map.Entry<Integer, Map<String,String>>> addresses = new ArrayList<Map.Entry<Integer, Map<String,String>>>();
-	    addresses.addAll(addressBook.entries().entrySet());
-	    Collections.sort(addresses, byMapValues);
-	    return addresses.get(0).getValue();
+	    Comparator<Map.Entry<Integer, Map<String,String>>> byValue = (entry1, entry2) -> entry1.getValue().get("dob").compareTo(
+	            entry2.getValue().get("dob"));
+	    Optional<Map.Entry<Integer, Map<String,String>>> entry = addressBook.entries()
+	            .entrySet()
+	            .stream()
+	            .sorted(byValue)
+	            .findFirst();
+	    
+	    return entry.get().getValue();
 	}
     
 	public Integer differenceInAgesInDays(String firstName1, String firstName2) throws ParseException {
