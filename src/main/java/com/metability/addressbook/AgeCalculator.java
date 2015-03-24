@@ -25,15 +25,13 @@ public class AgeCalculator {
 	            .stream()
 	            .sorted(byValue)
 	            .findFirst();
-	    
 	    return entry.get().getValue();
 	}
     
 	public Integer differenceInAgesInDays(String firstName1, String firstName2) throws ParseException {
-		Map<String, String> entry1 = addressBook.findByFirstName(firstName1);
-		Map<String, String> entry2 = addressBook.findByFirstName(firstName2);
-		Date dob1 = new SimpleDateFormat("dd/MM/yy").parse(entry1.get("dob"));
-		Date dob2 = new SimpleDateFormat("dd/MM/yy").parse(entry2.get("dob"));
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
+		Date dob1 = dateFormat.parse(addressBook.findByFirstName(firstName1).get("dob"));
+		Date dob2 = dateFormat.parse(addressBook.findByFirstName(firstName2).get("dob"));
 	    return (int) Math.abs(TimeUnit.DAYS.convert(dob1.getTime() - dob2.getTime(), TimeUnit.MILLISECONDS));
 	}
 }
